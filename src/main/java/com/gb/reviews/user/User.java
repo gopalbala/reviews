@@ -1,4 +1,4 @@
-package com.gb.reviews.users;
+package com.gb.reviews.user;
 
 import lombok.Getter;
 import lombok.Setter;

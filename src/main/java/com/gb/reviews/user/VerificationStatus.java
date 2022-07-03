@@ -1,4 +1,4 @@
-package com.gb.reviews.users;
+package com.gb.reviews.user;
 
 public enum VerificationStatus {
     VERIFIED,
