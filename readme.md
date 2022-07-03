@@ -1,4 +1,4 @@
-** Design a review system for retailer **  
+**Design a review system for retailer**  
 
 User should be able to add review text for a product  
 User should be able to provide overall rating for the product  
