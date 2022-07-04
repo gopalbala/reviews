@@ -83,30 +83,35 @@ public class Review {
 
     public List<Review> getReviewsByFeature(long productId, String feature) {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                        && r.reviewState == ReviewState.MODERATION_SUCCESS
                         && getReviewsByFeature(r, feature))
                 .collect(Collectors.toList());
     }
 
     public List<Review> getReviewsByRating(long productId, int star) {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                        && r.reviewState == ReviewState.MODERATION_SUCCESS
                         && r.getRating() >= star)
                 .collect(Collectors.toList());
     }
 
     public List<Review> getReviewsByDateDesc(long productId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId)
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                        && r.reviewState == ReviewState.MODERATION_SUCCESS)
                 .sorted(Comparator.comparing(Review::getReviewedDate).reversed())
                 .collect(Collectors.toList());
     }
 
     public List<Review> getReviewsByDate(long productId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId)
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                && r.reviewState == ReviewState.MODERATION_SUCCESS)
                 .sorted(Comparator.comparing(Review::getReviewedDate))
                 .collect(Collectors.toList());
     }
 
     public List<Review> getCertifiedReviews(long productId) {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                && r.reviewState == ReviewState.MODERATION_SUCCESS
                 && r.reviewType == CERTIFIED_BUYER).collect(Collectors.toList());
     }
 
