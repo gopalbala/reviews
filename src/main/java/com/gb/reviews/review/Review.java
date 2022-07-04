@@ -20,7 +20,7 @@ public class Review {
     private LocalDateTime reviewedDate;
     private String location;
     @Setter
-    private List<ReviewMeta> reviewMetas;
+    private List<Meta> metas;
 
     public List<Feature> features;
 
@@ -29,7 +29,7 @@ public class Review {
     }
 
     public void addReview(long productId, int rating, String title,
-                          String text, List<ReviewMeta> reviewMetas, String userId,
+                          String text, List<Meta> metas, String userId,
                           List<Feature> features) {
         if (rating <= 0 || rating >= 5)
             return;
@@ -38,7 +38,7 @@ public class Review {
         this.rating = rating;
         this.title = title;
         this.text = text;
-        this.reviewMetas = reviewMetas;
+        this.metas = metas;
         this.userId = userId;
         this.reviewedDate = LocalDateTime.now();
         User user = new User(userId);

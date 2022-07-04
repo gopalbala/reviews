@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ReviewMeta {
+public class Meta {
     private BufferedImage reviewImages;
     private String imagePath;
 }
