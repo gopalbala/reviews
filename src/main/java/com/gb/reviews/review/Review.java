@@ -5,6 +5,7 @@ import com.gb.reviews.user.User;
 import com.gb.reviews.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,7 +63,7 @@ public class Review {
                         .collect(Collectors.toList());
     }
 
-    public Review moderate(Review review) {
+    public Review moderate(@NotNull Review review) {
         //send the review to moderation
         //if this fails then do not save
         //if the moderation succeeds then make the review available for users
@@ -81,7 +82,13 @@ public class Review {
                 .collect(Collectors.toList());
     }
 
-    private boolean getReviewsByFeature(Review review, String feature) {
+    public List<Review> getReviewsByRating(long productId, int star) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                        && r.getRating() >= star)
+                .collect(Collectors.toList());
+    }
+
+    private boolean getReviewsByFeature(@NotNull Review review, String feature) {
         List<Feature> features = review.getFeatures();
         features = features.parallelStream().filter(f -> f.getFeatureName().contains(feature))
                 .collect(Collectors.toList());
