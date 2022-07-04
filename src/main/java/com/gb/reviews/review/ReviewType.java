@@ -1,4 +1,4 @@
-package com.gb.reviews.user;
+package com.gb.reviews.review;
 
 public enum ReviewType {
     CERTIFIED_BUYER,

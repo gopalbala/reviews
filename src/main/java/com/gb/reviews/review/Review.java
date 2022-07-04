@@ -1,5 +1,6 @@
 package com.gb.reviews.review;
 
+import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.user.User;
 import com.gb.reviews.utils.Utils;
 import lombok.Getter;
@@ -7,9 +8,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
-
+@Setter
 public class Review {
     private long id;
     private long productId;
@@ -19,10 +21,10 @@ public class Review {
     private String userId;
     private LocalDateTime reviewedDate;
     private String location;
-    @Setter
-    private List<Meta> metas;
 
+    private List<Meta> metas;
     public List<Feature> features;
+    private ReviewState reviewState;
 
     public Review() {
         this.id = Utils.getRandomLong();
@@ -44,5 +46,27 @@ public class Review {
         User user = new User(userId);
         this.location = user.getUserProfile().getUserLocation().getCity();
         this.features = features;
+        reviewState = ReviewState.MODERATION_PENDING;
+    }
+
+    public Review addReview(Review review) {
+        ReviewRepository.reviews.add(review);
+        ReviewRepository.reviewMap.put(review.getProductId(), review);
+        moderate(review);
+        return review;
+    }
+
+    public List<Review> getReviewsByProduct(long productId) {
+        return
+                ReviewRepository.reviews.stream().filter(r-> r.productId == productId)
+                        .collect(Collectors.toList());
+    }
+
+    public Review moderate(Review review) {
+        //send the review to moderation
+        //if this fails then do not save
+        //if the moderation succeeds then make the review available for users
+        review.reviewState = ReviewState.MODERATION_SUCCESS;
+        return review;
     }
 }

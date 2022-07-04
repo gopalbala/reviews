@@ -49,7 +49,6 @@ public class ReviewApplication {
                 "attractive design,  awesome display, super camera, super design fabulous",
                 null, user.getUserId(), features);
 
-        ReviewRepository.reviews.add(review);
-        ReviewRepository.reviewMap.put(review.getProductId(), review);
+        review.addReview(review);
     }
 }
