@@ -1,7 +1,6 @@
 package com.gb.reviews.review;
 
 import com.gb.reviews.user.User;
-import com.gb.reviews.user.UserProfile;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +21,8 @@ public class Review {
     private List<ReviewMeta> reviewMetas;
 
     public void addReview(String productId, int rating, String title,
-                          String text,List<ReviewMeta> reviewMetas, String userId) {
-        if (rating <=0 || rating >=5)
+                          String text, List<ReviewMeta> reviewMetas, String userId) {
+        if (rating <= 0 || rating >= 5)
             return;
         this.id = 1L;
         this.productId = productId;
