@@ -1,9 +1,14 @@
 package com.gb.reviews.app;
 
+import com.gb.reviews.review.Feature;
 import com.gb.reviews.review.Review;
 import com.gb.reviews.user.User;
 import com.gb.reviews.user.UserLocation;
 import com.gb.reviews.user.UserProfile;
+import com.gb.reviews.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewApplication {
     public static void main(String[] args) {
@@ -21,9 +26,19 @@ public class ReviewApplication {
         userLocation.setPin("560100");
         userProfile.setUserLocation(userLocation);
         user.setUserProfile(userProfile);
-
         user.saveUser(user);
 
         Review review = new Review();
+
+        List<Feature> features = new ArrayList<>();
+        Feature feature = new Feature();
+        feature.setFeatureName("camera");
+        feature.setTitle("excellent camera");
+        feature.setText("Camera quality is great (as I bought it for only 14000) it is way better.");
+        feature.setRating(4);
+        features.add(feature);
+        review.addReview(Utils.getRandomLong(),4,"great product",
+                "attractive design,  awesome display, super camera, super design fabulous",
+                null, user.getUserId(), features);
     }
 }
