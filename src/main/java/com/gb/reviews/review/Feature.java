@@ -11,5 +11,5 @@ public class Feature {
     private String featureName;
     private String title;
     private String text;
-    private float rating;
+    private int rating;
 }
