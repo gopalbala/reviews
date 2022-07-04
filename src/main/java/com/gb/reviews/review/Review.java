@@ -105,6 +105,11 @@ public class Review {
                 .collect(Collectors.toList());
     }
 
+    public List<Review> getCertifiedReviews(long productId) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                && r.reviewType == CERTIFIED_BUYER).collect(Collectors.toList());
+    }
+
     private boolean getReviewsByFeature(@NotNull Review review, String feature) {
         List<Feature> features = review.getFeatures();
         features = features.parallelStream().filter(f -> f.getFeatureName().contains(feature))
