@@ -1,5 +1,6 @@
 package com.gb.reviews.app;
 
+import com.gb.reviews.review.Review;
 import com.gb.reviews.user.User;
 import com.gb.reviews.user.UserLocation;
 import com.gb.reviews.user.UserProfile;
@@ -22,5 +23,7 @@ public class ReviewApplication {
         user.setUserProfile(userProfile);
 
         user.saveUser(user);
+
+        Review review = new Review();
     }
 }

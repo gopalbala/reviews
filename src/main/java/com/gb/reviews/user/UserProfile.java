@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.UUID;
 
 @Getter
 @Setter
