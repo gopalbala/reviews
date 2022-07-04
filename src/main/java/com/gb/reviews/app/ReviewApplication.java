@@ -1,5 +1,6 @@
 package com.gb.reviews.app;
 
+import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.review.Feature;
 import com.gb.reviews.review.Review;
 import com.gb.reviews.user.User;
@@ -37,8 +38,18 @@ public class ReviewApplication {
         feature.setText("Camera quality is great (as I bought it for only 14000) it is way better.");
         feature.setRating(4);
         features.add(feature);
+
+        feature = new Feature();
+        feature.setFeatureName("speakers");
+        feature.setTitle("audio is good");
+        feature.setText("Songs are good to listen from this phone. Phone audio quality is good");
+        feature.setRating(4);
+
         review.addReview(Utils.getRandomLong(),4,"great product",
                 "attractive design,  awesome display, super camera, super design fabulous",
                 null, user.getUserId(), features);
+
+        ReviewRepository.reviews.add(review);
+        ReviewRepository.reviewMap.put(review.getProductId(), review);
     }
 }
