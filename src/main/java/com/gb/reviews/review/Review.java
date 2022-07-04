@@ -58,7 +58,7 @@ public class Review {
 
     public List<Review> getReviewsByProduct(long productId) {
         return
-                ReviewRepository.reviews.stream().filter(r-> r.productId == productId)
+                ReviewRepository.reviews.stream().filter(r -> r.productId == productId)
                         .collect(Collectors.toList());
     }
 
@@ -68,5 +68,23 @@ public class Review {
         //if the moderation succeeds then make the review available for users
         review.reviewState = ReviewState.MODERATION_SUCCESS;
         return review;
+    }
+
+    public List<Review> getMyReviews(String userId) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.userId == userId)
+                .collect(Collectors.toList());
+    }
+
+    public List<Review> getReviewsByFeature(long productId, String feature) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                        && getReviewsByFeature(r, feature))
+                .collect(Collectors.toList());
+    }
+
+    private boolean getReviewsByFeature(Review review, String feature) {
+        List<Feature> features = review.getFeatures();
+        features = features.parallelStream().filter(f -> f.getFeatureName().contains(feature))
+                .collect(Collectors.toList());
+        return features.size() > 0;
     }
 }
