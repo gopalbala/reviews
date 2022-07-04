@@ -9,5 +9,5 @@ import java.util.Map;
 
 public class UserRepository {
     public static List<User> users = new ArrayList<>();
-    public static Map<String,User> usersMap = new HashMap<>();
+    public static Map<String, User> usersMap = new HashMap<>();
 }

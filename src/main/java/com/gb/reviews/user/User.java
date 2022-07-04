@@ -1,5 +1,6 @@
 package com.gb.reviews.user;
 
+import com.gb.reviews.repository.UserRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,10 +22,23 @@ public class User {
         this.userNickName = userNickName;
     }
 
-    public UserProfile findByUserId(String userId) {
-        if (this.userProfile == null)
-            this.userProfile = new UserProfile(userId);
-        this.userProfile = userProfile.getByUserId(userId);
-        return this.userProfile;
+    public User findByUserId(String userId) {
+        return UserRepository.usersMap.get(userId);
+    }
+
+    public User saveUser(User user) {
+        UserRepository.usersMap.put(user.userId, user);
+        initiateVerification(user);
+        return user;
+    }
+
+    public void initiateVerification(User user) {
+        //initiate verification process;
+        //update the verification info for the user object
+        setVerificationStatus(userId, VerificationStatus.VERIFIED);
+    }
+
+    public void setVerificationStatus(String userId, VerificationStatus verificationStatus) {
+        findByUserId(userId).getUserProfile().setVerificationStatus(verificationStatus);
     }
 }
