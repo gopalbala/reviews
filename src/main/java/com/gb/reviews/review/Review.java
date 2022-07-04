@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gb.reviews.review.ReviewType.CERTIFIED_BUYER;
+
 @Getter
 @Setter
 public class Review {
@@ -26,6 +28,7 @@ public class Review {
     private List<Meta> metas;
     public List<Feature> features;
     private ReviewState reviewState;
+    private ReviewType reviewType;
 
     public Review() {
         this.id = Utils.getRandomLong();
@@ -54,6 +57,7 @@ public class Review {
         ReviewRepository.reviews.add(review);
         ReviewRepository.reviewMap.put(review.getProductId(), review);
         moderate(review);
+        updateReviewType(review);
         return review;
     }
 
@@ -93,5 +97,12 @@ public class Review {
         features = features.parallelStream().filter(f -> f.getFeatureName().contains(feature))
                 .collect(Collectors.toList());
         return features.size() > 0;
+    }
+
+    private void updateReviewType(Review review) {
+        //fetch the orders by user
+        //if the user has ordered the product then the review type is certified
+        //else anonymous
+        review.setReviewType(CERTIFIED_BUYER);
     }
 }
