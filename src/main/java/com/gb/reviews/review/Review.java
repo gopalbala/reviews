@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,6 +90,18 @@ public class Review {
     public List<Review> getReviewsByRating(long productId, int star) {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
                         && r.getRating() >= star)
+                .collect(Collectors.toList());
+    }
+
+    public List<Review> getReviewsByDateDesc(long productId) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId)
+                .sorted(Comparator.comparing(Review::getReviewedDate).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Review> getReviewsByDate(long productId) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId)
+                .sorted(Comparator.comparing(Review::getReviewedDate))
                 .collect(Collectors.toList());
     }
 
