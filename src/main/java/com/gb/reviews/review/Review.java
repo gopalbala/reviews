@@ -123,6 +123,12 @@ public class Review {
                 && r.reviewType == CERTIFIED_BUYER).collect(Collectors.toList());
     }
 
+    public List<Review> getReviewsWithMeta(long productId) {
+       return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
+                && r.reviewState == ReviewState.MODERATION_SUCCESS
+                && isMetaPresent(r)).collect(Collectors.toList());
+    }
+
     public void setModerationStateSuccess(long reviewId) {
         Review review = ReviewRepository.reviewMap.get(reviewId);
         if (review != null) {
@@ -154,5 +160,17 @@ public class Review {
         //if the user has ordered the product then the review type is certified
         //else anonymous
         review.setReviewType(CERTIFIED_BUYER);
+    }
+
+    private boolean isMetaPresent(Review review) {
+        if (review.getMetas() != null && review.getMetas().size() > 0)
+            return true;
+        for (Feature feature : review.features) {
+            if (feature.getMetas() != null && feature.getMetas().size() > 0)
+                return true;
+        }
+        return false;
+
+
     }
 }
