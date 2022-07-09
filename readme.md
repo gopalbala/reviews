@@ -13,3 +13,5 @@ Users should be able to filter reviews based on the below
  5. Reviews by date asc and desc
  6. Get certified reviews
 
+Users review moderation status updation and notifying users based on the state.
+
