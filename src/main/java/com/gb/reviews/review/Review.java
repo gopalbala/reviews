@@ -1,10 +1,12 @@
 package com.gb.reviews.review;
 
 import com.gb.reviews.repository.ReviewRepository;
+import com.gb.reviews.repository.UserRepository;
 import com.gb.reviews.user.User;
 import com.gb.reviews.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,7 @@ import static com.gb.reviews.review.ReviewType.CERTIFIED_BUYER;
 
 @Getter
 @Setter
+@ToString
 public class Review {
     private long id;
     private long productId;
@@ -49,6 +52,7 @@ public class Review {
         this.userId = userId;
         this.reviewedDate = LocalDateTime.now();
         User user = new User(userId);
+        user.setUserProfile(UserRepository.usersMap.get(userId).getUserProfile());
         this.location = user.getUserProfile().getUserLocation().getCity();
         this.features = features;
         reviewState = ReviewState.MODERATION_PENDING;
@@ -104,7 +108,7 @@ public class Review {
 
     public List<Review> getReviewsByDate(long productId) {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                && r.reviewState == ReviewState.MODERATION_SUCCESS)
+                        && r.reviewState == ReviewState.MODERATION_SUCCESS)
                 .sorted(Comparator.comparing(Review::getReviewedDate))
                 .collect(Collectors.toList());
     }
@@ -113,6 +117,21 @@ public class Review {
         return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
                 && r.reviewState == ReviewState.MODERATION_SUCCESS
                 && r.reviewType == CERTIFIED_BUYER).collect(Collectors.toList());
+    }
+
+    public void setModerationStateSuccess(long reviewId) {
+        Review review = ReviewRepository.reviewMap.get(reviewId);
+        if (review != null) {
+            review.setReviewState(ReviewState.MODERATION_SUCCESS);
+        }
+    }
+
+    public void setModerationStateFailed(long reviewId) {
+        Review review = ReviewRepository.reviewMap.get(reviewId);
+        if (review != null) {
+            review.setReviewState(ReviewState.MODERATION_FAILED);
+        }
+        //notify the state and reason to user
     }
 
     private boolean getReviewsByFeature(@NotNull Review review, String feature) {
