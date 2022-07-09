@@ -1,10 +1,15 @@
 package com.gb.reviews.user;
 
+import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.repository.UserRepository;
+import com.gb.reviews.review.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -42,5 +47,10 @@ public class User {
 
     public void setVerificationStatus(String userId, VerificationStatus verificationStatus) {
         findByUserId(userId).getUserProfile().setVerificationStatus(verificationStatus);
+    }
+
+    public List<Review> getMyReviews(String userId) {
+        return ReviewRepository.reviews.parallelStream().filter(r -> r.getUserId() == userId)
+                .collect(Collectors.toList());
     }
 }
