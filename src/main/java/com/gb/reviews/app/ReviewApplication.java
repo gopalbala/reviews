@@ -3,6 +3,7 @@ package com.gb.reviews.app;
 import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.review.Feature;
 import com.gb.reviews.review.Review;
+import com.gb.reviews.review.ReviewType;
 import com.gb.reviews.user.User;
 import com.gb.reviews.user.UserLocation;
 import com.gb.reviews.user.UserProfile;
@@ -45,10 +46,60 @@ public class ReviewApplication {
         feature.setText("Songs are good to listen from this phone. Phone audio quality is good");
         feature.setRating(4);
 
-        review.addReview(Utils.getRandomLong(),4,"great product",
+        long product1 = Utils.getRandomLong();
+        review.addReview(product1, 4, "great product",
                 "attractive design,  awesome display, super camera, super design fabulous",
                 null, user.getUserId(), features);
 
         review.addReview(review);
+
+        ReviewRepository.reviews.add(review);
+
+        review.setModerationStateSuccess(review.getId());
+        review.setReviewType(ReviewType.CERTIFIED_BUYER);
+
+        user = new User("user2@abc.com", "user1");
+        userProfile = new UserProfile(user.getUserId());
+        userProfile.setFirstName("user");
+        userProfile.setLastName("2");
+        userProfile.setUserName("user2");
+        userProfile.setSecondaryEmailId("user2alt@abc.com");
+        userProfile.setPassword("encrypted");
+        userProfile.setPhoneNumber("9349545162");
+        userLocation = new UserLocation();
+        userLocation.setAddress1("1, ORR");
+        userLocation.setCity("Delhi");
+        userLocation.setPin("100100");
+        userProfile.setUserLocation(userLocation);
+        user.setUserProfile(userProfile);
+        user.saveUser(user);
+
+        features = new ArrayList<>();
+        feature = new Feature();
+        feature.setFeatureName("camera");
+        feature.setTitle("excellent camera");
+        feature.setText("Able to take pictures in low light.");
+        feature.setRating(4);
+        features.add(feature);
+
+        review.addReview(product1, 3, "value for money",
+                "attractive color choices, good product at this price",
+                null, user.getUserId(), features);
+
+        List<Review> reviews = review.getReviewsByFeature(product1, "camera");
+        for (Review r : reviews) {
+            System.out.println(r.toString());
+        }
+
+        reviews = review.getCertifiedReviews(product1);
+        for (Review r : reviews) {
+            System.out.println(r.toString());
+        }
+
+        review.setModerationStateSuccess(review.getId());
+        review.setReviewType(ReviewType.CERTIFIED_BUYER);
+
+
+
     }
 }
