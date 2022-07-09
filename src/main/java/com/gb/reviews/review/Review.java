@@ -3,6 +3,8 @@ package com.gb.reviews.review;
 import com.gb.reviews.notifier.UserEmailNotification;
 import com.gb.reviews.notifier.UserEmailNotifier;
 import com.gb.reviews.notifier.UserEmailNotifierImpl;
+import com.gb.reviews.product.Product;
+import com.gb.reviews.repository.ProductRepository;
 import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.repository.UserRepository;
 import com.gb.reviews.user.User;
@@ -14,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,17 +64,13 @@ public class Review {
     }
 
     public Review addReview(Review review) {
+        Product product = ProductRepository.productMap.get(productId);
         ReviewRepository.reviews.add(review);
         ReviewRepository.reviewMap.put(review.getProductId(), review);
         moderate(review);
         updateReviewType(review);
+        product.getReviews().add(review);
         return review;
-    }
-
-    public List<Review> getReviewsByProduct(long productId) {
-        return
-                ReviewRepository.reviews.stream().filter(r -> r.productId == productId)
-                        .collect(Collectors.toList());
     }
 
     public Review moderate(@NotNull Review review) {
@@ -84,50 +81,6 @@ public class Review {
         return review;
     }
 
-    public List<Review> getMyReviews(String userId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.userId == userId)
-                .collect(Collectors.toList());
-    }
-
-    public List<Review> getReviewsByFeature(long productId, String feature) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                        && r.reviewState == ReviewState.MODERATION_SUCCESS
-                        && getReviewsByFeature(r, feature))
-                .collect(Collectors.toList());
-    }
-
-    public List<Review> getReviewsByRating(long productId, int star) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                        && r.reviewState == ReviewState.MODERATION_SUCCESS
-                        && r.getRating() >= star)
-                .collect(Collectors.toList());
-    }
-
-    public List<Review> getReviewsByDateDesc(long productId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                        && r.reviewState == ReviewState.MODERATION_SUCCESS)
-                .sorted(Comparator.comparing(Review::getReviewedDate).reversed())
-                .collect(Collectors.toList());
-    }
-
-    public List<Review> getReviewsByDate(long productId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                        && r.reviewState == ReviewState.MODERATION_SUCCESS)
-                .sorted(Comparator.comparing(Review::getReviewedDate))
-                .collect(Collectors.toList());
-    }
-
-    public List<Review> getCertifiedReviews(long productId) {
-        return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                && r.reviewState == ReviewState.MODERATION_SUCCESS
-                && r.reviewType == CERTIFIED_BUYER).collect(Collectors.toList());
-    }
-
-    public List<Review> getReviewsWithMeta(long productId) {
-       return ReviewRepository.reviews.parallelStream().filter(r -> r.productId == productId
-                && r.reviewState == ReviewState.MODERATION_SUCCESS
-                && isMetaPresent(r)).collect(Collectors.toList());
-    }
 
     public void setModerationStateSuccess(long reviewId) {
         Review review = ReviewRepository.reviewMap.get(reviewId);
@@ -148,29 +101,10 @@ public class Review {
                 "review moderation status", Instant.now()));
     }
 
-    private boolean getReviewsByFeature(@NotNull Review review, String feature) {
-        List<Feature> features = review.getFeatures();
-        features = features.parallelStream().filter(f -> f.getFeatureName().contains(feature))
-                .collect(Collectors.toList());
-        return features.size() > 0;
-    }
-
     private void updateReviewType(Review review) {
         //fetch the orders by user
         //if the user has ordered the product then the review type is certified
         //else anonymous
         review.setReviewType(CERTIFIED_BUYER);
-    }
-
-    private boolean isMetaPresent(Review review) {
-        if (review.getMetas() != null && review.getMetas().size() > 0)
-            return true;
-        for (Feature feature : review.features) {
-            if (feature.getMetas() != null && feature.getMetas().size() > 0)
-                return true;
-        }
-        return false;
-
-
     }
 }
