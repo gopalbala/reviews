@@ -1,5 +1,8 @@
 package com.gb.reviews.review;
 
+import com.gb.reviews.notifier.UserEmailNotification;
+import com.gb.reviews.notifier.UserEmailNotifier;
+import com.gb.reviews.notifier.UserEmailNotifierImpl;
 import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.repository.UserRepository;
 import com.gb.reviews.user.User;
@@ -9,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -132,6 +136,10 @@ public class Review {
             review.setReviewState(ReviewState.MODERATION_FAILED);
         }
         //notify the state and reason to user
+        UserEmailNotifier userEmailNotifier = new UserEmailNotifierImpl();
+        userEmailNotifier.notifyUser(new UserEmailNotification(userId,
+                "review moderation failed",
+                "review moderation status", Instant.now()));
     }
 
     private boolean getReviewsByFeature(@NotNull Review review, String feature) {
