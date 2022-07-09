@@ -1,5 +1,7 @@
 package com.gb.reviews.app;
 
+import com.gb.reviews.product.Product;
+import com.gb.reviews.repository.ProductRepository;
 import com.gb.reviews.repository.ReviewRepository;
 import com.gb.reviews.review.Feature;
 import com.gb.reviews.review.Review;
@@ -47,13 +49,15 @@ public class ReviewApplication {
         feature.setRating(4);
 
         long product1 = Utils.getRandomLong();
+
+        Product product = new Product(product1,"sku1","OnePlus 9R");
+        product.addProduct();
+
         review.addReview(product1, 4, "great product",
                 "attractive design,  awesome display, super camera, super design fabulous",
                 null, user.getUserId(), features);
 
         review.addReview(review);
-
-        ReviewRepository.reviews.add(review);
 
         review.setModerationStateSuccess(review.getId());
         review.setReviewType(ReviewType.CERTIFIED_BUYER);
@@ -86,20 +90,20 @@ public class ReviewApplication {
                 "attractive color choices, good product at this price",
                 null, user.getUserId(), features);
 
-        List<Review> reviews = review.getReviewsByFeature(product1, "camera");
+        List<Review> reviews = product.getReviewsByFeature(product1, "camera");
         for (Review r : reviews) {
-            System.out.println(r.toString());
+            System.out.println(r.getText());
         }
 
-        reviews = review.getCertifiedReviews(product1);
+        reviews = product.getCertifiedReviews(product1);
         for (Review r : reviews) {
-            System.out.println(r.toString());
+            System.out.println(r.getText());
         }
 
         review.setModerationStateSuccess(review.getId());
         review.setReviewType(ReviewType.CERTIFIED_BUYER);
 
-
-
+        reviews = product.getReviewsWithMeta(product1);
+        assert reviews.size() == 0;
     }
 }
