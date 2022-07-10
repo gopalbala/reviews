@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 @Setter
 @AllArgsConstructor
 public class Meta {
+    private long reviewId;
     private BufferedImage reviewImages;
     private String imagePath;
 }

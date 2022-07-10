@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class Summary {
+    private long productId;
     private int totalRatings;
     private float averageRating;
     private int totalOneStars;

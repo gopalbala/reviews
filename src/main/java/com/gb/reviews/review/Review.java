@@ -67,6 +67,7 @@ public class Review {
 
     public Review addReview(Review review) {
         Product product = ProductRepository.productMap.get(productId);
+        //if the product is not found don't proceed.
         ReviewRepository.reviews.add(review);
         ReviewRepository.reviewMap.put(review.getId(), review);
         moderate(review);
