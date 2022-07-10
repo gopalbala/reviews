@@ -48,7 +48,7 @@ public class Review {
                           List<Feature> features) {
         if (rating <= 0 || rating >= 5)
             return;
-        this.id = Utils.getRandomLong();
+//        this.id = Utils.getRandomLong();
         this.productId = productId;
         this.rating = rating;
         this.title = title;
@@ -60,13 +60,13 @@ public class Review {
         user.setUserProfile(UserRepository.usersMap.get(userId).getUserProfile());
         this.location = user.getUserProfile().getUserLocation().getCity();
         this.features = features;
-        reviewState = ReviewState.MODERATION_PENDING;
+        reviewState = ReviewState.MODERATION_SUCCESS;
     }
 
     public Review addReview(Review review) {
         Product product = ProductRepository.productMap.get(productId);
         ReviewRepository.reviews.add(review);
-        ReviewRepository.reviewMap.put(review.getProductId(), review);
+        ReviewRepository.reviewMap.put(review.getId(), review);
         moderate(review);
         updateReviewType(review);
         product.getReviews().add(review);
