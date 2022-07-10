@@ -16,4 +16,5 @@ Users should be able to filter reviews based on the below
 
 Users review moderation status updation and notifying users based on the state.
 
+![img.png](img.png)
 
