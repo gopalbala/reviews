@@ -57,10 +57,11 @@ public class ReviewApplication {
                 "attractive design,  awesome display, super camera, super design fabulous",
                 null, user.getUserId(), features);
 
-        review.addReview(review);
 
         review.setModerationStateSuccess(review.getId());
         review.setReviewType(ReviewType.CERTIFIED_BUYER);
+        review.addReview(review);
+
 
         user = new User("user2@abc.com", "user1");
         userProfile = new UserProfile(user.getUserId());
