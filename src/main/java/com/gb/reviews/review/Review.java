@@ -39,6 +39,8 @@ public class Review {
     private ReviewState reviewState;
     private ReviewType reviewType;
 
+    private ReviewSentiment reviewSentiment;
+
     public Review() {
         this.id = Utils.getRandomLong();
     }
@@ -99,6 +101,13 @@ public class Review {
         userEmailNotifier.notifyUser(new UserEmailNotification(userId,
                 "review moderation failed",
                 "review moderation status", Instant.now()));
+    }
+
+    public void setReviewSentiment(long reviewId, ReviewSentiment reviewSentiment) {
+        Review review = ReviewRepository.reviewMap.get(reviewId);
+        if (review != null) {
+            review.setReviewSentiment(reviewSentiment);
+        }
     }
 
     private void updateReviewType(Review review) {
